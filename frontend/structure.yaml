@@ -1,0 +1,387 @@
+src:
+  structure.yaml:
+    content: |-
+      キミヨミプラットフォームのフロントエンドアプリケーション構造
+      - 多言語対応
+      - Firebase認証
+      - API連携
+      - 性格診断システム
+      - 相性診断機能
+      - コンテンツ表示・提供機能
+      - ユーザープロフィール管理
+      - 決済機能（サブスクリプション、個別課金）
+      - 通知機能
+    dependency: []
+    agent: "claude-3-5-sonnet-20241022"
+    api: []
+
+  assets:
+    images:
+      cat.png:
+        content: "UIデザインテスト用のサンプル画像"
+        dependency: []
+        agent: "lumalabs-photon-1"
+        api: []
+      logo.png:
+        content: "アプリケーションのロゴ画像"
+        dependency: []
+        agent: "lumalabs-photon-1"
+        api: []
+    l10n:
+      app_en.arb:
+        content: "英語のローカライゼーションファイル"
+        dependency: []
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      app_ja.arb:
+        content: "日本語のローカライゼーションファイル"
+        dependency: []
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+
+  config:
+    .env:
+      content: "グローバル環境変数設定"
+      dependency: []
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+    .env.development:
+      content: "開発環境用の環境変数設定"
+      dependency:
+        - src/config/.env
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+    .env.local:
+      content: "ローカル開発環境用の環境変数設定"
+      dependency:
+        - src/config/.env
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+    .env.production:
+      content: "本番環境用の環境変数設定"
+      dependency:
+        - src/config/.env
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+    .env.staging:
+      content: "ステージング環境用の環境変数設定"
+      dependency:
+        - src/config/.env
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+
+  constants:
+    api_endpoints.dart:
+      content: |-
+        APIエンドポイントの集中管理
+        - 認証
+        - プロフィール
+        - 診断
+        - 相性診断
+        - コンテンツ
+        - 決済
+        - 通知
+      dependency: []
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+    app_colors.dart:
+      content: "アプリケーション全体で使用するカラーパレット"
+      dependency: []
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+    app_text_styles.dart:
+      content: "アプリケーション全体で使用するテキストスタイル"
+      dependency: []
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+
+  core:
+    api:
+      api_client.dart:
+        content: "Dioを使用したHTTPクライアント実装"
+        dependency:
+          - src/core/api/auth_interceptor.dart
+          - package:dio/dio.dart
+          - package:pretty_dio_logger/pretty_dio_logger.dart
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+      auth_interceptor.dart:
+        content: "APIリクエストに認証ヘッダーを付与するインターセプター"
+        dependency:
+          - package:dio/dio.dart
+          - src/core/services/auth_service.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+    error:
+      app_exception.dart:
+        content: "アプリケーション固有の例外クラス"
+        dependency: []
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+    navigation:
+      app_router.dart:
+        content: "Go Routerを使用したアプリケーションのルーティング設定"
+        dependency:
+          - package:go_router/go_router.dart
+          - src/screens/home_screen.dart
+          - src/screens/profile_screen.dart
+          - src/screens/auth/login_screen.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+    state:
+      providers.dart:
+        content: "Riverpodを使用した状態管理プロバイダー定義"
+        dependency:
+          - package:riverpod_annotation/riverpod_annotation.dart
+          - src/core/services/auth_service.dart
+          - src/core/services/user_service.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+
+  data:
+    models:
+      user.dart:
+        content: "ユーザーデータモデル"
+        dependency: []
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      profile.dart:
+        content: "プロフィールデータモデル"
+        dependency:
+          - src/data/models/user.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      diagnosis_result.dart:
+        content: "性格診断結果データモデル"
+        dependency: []
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      compatibility_result.dart:
+        content: "相性診断結果データモデル"
+        dependency:
+          - src/data/models/user.dart
+          - src/data/models/diagnosis_result.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      content_item.dart:
+        content: "コンテンツアイテムデータモデル"
+        dependency: []
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+    repositories:
+      auth_repository_impl.dart:
+        content: "認証関連のRepository実装"
+        dependency:
+          - src/core/api/api_client.dart
+          - src/domain/repositories/auth_repository.dart
+          - src/data/models/user.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      user_repository_impl.dart:
+        content: "ユーザー関連のRepository実装"
+        dependency:
+          - src/core/api/api_client.dart
+          - src/domain/repositories/user_repository.dart
+          - src/data/models/user.dart
+          - src/data/models/profile.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      diagnosis_repository_impl.dart:
+        content: "診断関連のRepository実装"
+        dependency:
+          - src/core/api/api_client.dart
+          - src/domain/repositories/diagnosis_repository.dart
+          - src/data/models/diagnosis_result.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      compatibility_repository_impl.dart:
+        content: "相性診断関連のRepository実装"
+        dependency:
+          - src/core/api/api_client.dart
+          - src/domain/repositories/compatibility_repository.dart
+          - src/data/models/compatibility_result.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      content_repository_impl.dart:
+        content: "コンテンツ関連のRepository実装"
+        dependency:
+          - src/core/api/api_client.dart
+          - src/domain/repositories/content_repository.dart
+          - src/data/models/content_item.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+
+  domain:
+    entities:
+      user.dart:
+        content: "ユーザーエンティティ"
+        dependency: []
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      profile.dart:
+        content: "プロフィールエンティティ"
+        dependency:
+          - src/domain/entities/user.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      diagnosis_result.dart:
+        content: "性格診断結果エンティティ"
+        dependency: []
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      compatibility_result.dart:
+        content: "相性診断結果エンティティ"
+        dependency:
+          - src/domain/entities/user.dart
+          - src/domain/entities/diagnosis_result.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      content_item.dart:
+        content: "コンテンツアイテムエンティティ"
+        dependency: []
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+    repositories:
+      auth_repository.dart:
+        content: "認証関連のRepositoryインターフェース"
+        dependency:
+          - src/domain/entities/user.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      user_repository.dart:
+        content: "ユーザー関連のRepositoryインターフェース"
+        dependency:
+          - src/domain/entities/user.dart
+          - src/domain/entities/profile.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      diagnosis_repository.dart:
+        content: "診断関連のRepositoryインターフェース"
+        dependency:
+          - src/domain/entities/diagnosis_result.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      compatibility_repository.dart:
+        content: "相性診断関連のRepositoryインターフェース"
+        dependency:
+          - src/domain/entities/compatibility_result.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      content_repository.dart:
+        content: "コンテンツ関連のRepositoryインターフェース"
+        dependency:
+          - src/domain/entities/content_item.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+
+  presentation:
+    screens:
+      home_screen.dart:
+        content: "ホーム画面のUI"
+        dependency:
+          - src/core/state/providers.dart
+          - src/widgets/content_card.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      profile_screen.dart:
+        content: "プロフィール画面のUI"
+        dependency:
+          - src/core/state/providers.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      auth:
+        login_screen.dart:
+          content: "ログイン画面のUI"
+          dependency:
+            - src/core/state/providers.dart
+          agent: "claude-3-5-sonnet-20241022"
+          api: []
+        register_screen.dart:
+          content: "登録画面のUI"
+          dependency:
+             - src/core/state/providers.dart
+          agent: "claude-3-5-sonnet-20241022"
+          api: []
+      diagnosis:
+        diagnosis_screen.dart:
+          content: "性格診断画面のUI"
+          dependency:
+            - src/core/state/providers.dart
+          agent: "claude-3-5-sonnet-20241022"
+          api: []
+        diagnosis_result_screen.dart:
+          content: "性格診断結果画面のUI"
+          dependency:
+            - src/core/state/providers.dart
+          agent: "claude-3-5-sonnet-20241022"
+          api: []
+      compatibility:
+        compatibility_screen.dart:
+          content: "相性診断画面のUI"
+          dependency:
+            - src/core/state/providers.dart
+          agent: "claude-3-5-sonnet-20241022"
+          api: []
+        compatibility_result_screen.dart:
+          content: "相性診断結果画面のUI"
+          dependency:
+            - src/core/state/providers.dart
+          agent: "claude-3-5-sonnet-20241022"
+          api: []
+      content:
+        content_detail_screen.dart:
+          content: "コンテンツ詳細画面のUI"
+          dependency:
+            - src/core/state/providers.dart
+          agent: "claude-3-5-sonnet-20241022"
+          api: []
+    widgets:
+      content_card.dart:
+        content: "コンテンツを表示するUIカード"
+        dependency:
+          - src/data/models/content_item.dart
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+      app_button.dart:
+        content: "アプリケーション全体で使用するボタンコンポーネント"
+        dependency: []
+        agent: "claude-3-5-sonnet-20241022"
+        api: []
+
+  services:
+    auth_service.dart:
+      content: "認証関連のビジネスロジック"
+      dependency:
+        - src/data/repositories/auth_repository_impl.dart
+        - src/domain/entities/user.dart
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+    user_service.dart:
+      content: "ユーザー関連のビジネスロジック"
+      dependency:
+        - src/data/repositories/user_repository_impl.dart
+        - src/domain/entities/user.dart
+        - src/domain/entities/profile.dart
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+    diagnosis_service.dart:
+      content: "診断関連のビジネスロジック"
+      dependency:
+        - src/data/repositories/diagnosis_repository_impl.dart
+        - src/domain/entities/diagnosis_result.dart
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+    compatibility_service.dart:
+      content: "相性診断関連のビジネスロジック"
+      dependency:
+        - src/data/repositories/compatibility_repository_impl.dart
+        - src/domain/entities/compatibility_result.dart
+      agent: "claude-3-5-sonnet-20241022"
+      api: []
+    content_service.dart:
+      content: "コンテンツ関連のビジネスロジック"
+      dependency:
+        - src/data/repositories/content_repository_impl.dart
+        - src/domain/entities/content_item.dart
+      agent: "claude-3-5-sonnet-20241022"
+      api: []

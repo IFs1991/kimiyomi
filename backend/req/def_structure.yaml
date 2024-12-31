@@ -1,0 +1,165 @@
+src:
+  structure.yaml:
+    content: "キミヨミのバックエンド要件定義書に基づいたプロジェクト構造の説明, コードの内容, 依存関係, エージェント選定理由, API選定理由"
+    dependency: []
+    agent: "claude-3-5-sonnet-20241022"
+    api: []
+  api:
+    auth:
+      register.go:
+        content: |-
+          ""ユーザー登録APIエンドポイントの実装
+          - フロントエンドからのユーザー情報検証
+          - パスワードのハッシュ化
+          - Firebase Authenticationとの連携
+          - メール認証プロセスの開始
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、認証処理の実装に適しています。""
+        dependency:
+          - src/database/user.go
+          - src/middleware/firebase.go
+        agent: "o1-preview-2024-09-12"
+        api: "firebase-auth"
+      login.go:
+        content: |-
+          ""ログインAPIエンドポイントの実装
+          - フロントエンドからの認証情報検証
+          - パスワードのハッシュ値比較
+          - JWTの発行と返却
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、認証処理の実装に適しています。""
+        dependency:
+          - src/database/user.go
+          - src/middleware/jwt.go
+        agent: "o1-preview-2024-09-12"
+        api: "jwt"
+      middleware.go:
+        content: |-
+          ""JWT検証ミドルウェアの実装
+          - リクエストヘッダーのJWT検証
+          - 有効なJWTの場合、ユーザー情報をリクエストコンテキストに設定
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、認証処理の実装に適しています。""
+        dependency:
+          - src/utils/jwt.go
+        agent: "o1-preview-2024-09-12"
+        api: "jwt"
+      user.go:
+        content: |-
+          ""ユーザー情報管理APIの実装
+          - ユーザーID、ニックネーム、メールアドレスなどの基本情報管理
+          - パスワード更新機能
+          - ユーザーアカウント削除機能
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、認証処理の実装に適しています。""
+        dependency:
+          - src/database/user.go
+        agent: "o1-preview-2024-09-12"
+        api: []
+    diagnosis:
+      question.go:
+        content: |-
+          ""診断質問管理・提供APIの実装
+          - 診断質問、回答形式、カテゴリ情報の管理
+          - フロントエンドからのリクエストに応じて、診断質問をランダムまたは順番に提供
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、APIの実装に適しています。""
+        dependency:
+          - src/database/diagnosis.go
+        agent: "o1-preview-2024-09-12"
+        api: []
+      answer.go:
+        content: |-
+          ""回答データ処理・スコアリングロジックの実装
+          - フロントエンドから送信された回答データの安全な保存
+          - 各質問の重み付け設定管理とスコアリング
+          - カテゴリごとの集計処理とスコア算出
+          - 総合評価の算出
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、APIの実装に適しています。""
+        dependency:
+          - src/database/diagnosis.go
+        agent: "o1-preview-2024-09-12"
+        api: []
+      personality.go:
+        content: |-
+          ""性格タイプ判定ロジックの実装
+          - スコアに基づいた16種類の性格タイプ判定
+          - 相性判定用パラメータ設定
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、APIの実装に適しています。""
+        dependency:
+          - src/database/diagnosis.go
+        agent: "o1-preview-2024-09-12"
+        api: []
+      result.go:
+        content: |-
+          ""診断結果の生成・保存APIの実装
+          - 性格タイプ名、概要説明、主要な特徴、各カテゴリのスコア、長所・短所分析などの情報生成
+          - AI生成コンテンツ（パーソナライズされた詳細解説、コミュニケーションアドバイス、相性の良い性格タイプの提案）の生成と保存
+          - 診断結果をユーザーに関連付けて保存
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、APIの実装に適しています。""
+        dependency:
+          - src/database/diagnosis.go
+          - src/ai/openai.go
+        agent: "o1-preview-2024-09-12"
+        api: "openai-gpt-4"
+    relationship:
+      daily.go:
+        content: |-
+          ""ユーザー間の相性スコア算出ロジックの実装
+          - 各ユーザーの性格診断結果に基づいた相性スコア算出
+          - 相性スコアの毎日0時更新スケジュール設定
+          - AIを活用したパーソナライズされたアドバイス生成
+          - コミュニケーションのきっかけとなる話題提案
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、APIの実装に適しています。""
+        dependency:
+          - src/database/relationship.go
+          - src/ai/openai.go
+        agent: "o1-preview-2024-09-12"
+        api: "openai-gpt-4"
+      result.go:
+        content: |-
+          ""相性診断結果をユーザーに関連付けて保存するAPIの実装
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、APIの実装に適しています。""
+        dependency:
+          - src/database/relationship.go
+        agent: "o1-preview-2024-09-12"
+        api: []
+    visual:
+      content.go:
+        content: |-
+          ""キャストが提供する写真・動画コンテンツを管理するAPIの実装
+          - コンテンツのアップロード、保存、削除機能
+          - コンテンツのメタデータ（タイトル、説明など）管理機能
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、APIの実装に適しています。""
+        dependency:
+          - src/storage/s3.go
+        agent: "o1-preview-2024-09-12"
+        api: "s3"
+      relation.go:
+        content: |-
+          ""コンテンツと相性診断結果の関連付けを管理するAPIの実装
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、APIの実装に適しています。""
+        dependency:
+          - src/database/visual.go
+        agent: "o1-preview-2024-09-12"
+        api: []
+      access.go:
+        content: |-
+          ""コンテンツへのアクセス権限を管理するAPIの実装
+          
+          agent選定理由: o1-preview-2024-09-12はバックエンド開発における最新技術トレンドの理解に強く、APIの実装に適しています。""
+        dependency:
+          - src/database/visual.go
+        agent: "o1-preview-2024-09-12"
+        api: []
+    content_provider:
+      setting.go:
+        content: |-
+          ""診断結果公開設定

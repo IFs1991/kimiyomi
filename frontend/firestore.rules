@@ -1,0 +1,107 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 共通のバリデーション関数
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function isValidTimestamp() {
+      return request.time == request.resource.data.updatedAt;
+    }
+
+    // ユーザーコレクション
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isOwner(userId);
+      allow update: if isAuthenticated() && isOwner(userId) && isValidTimestamp();
+      allow delete: if isAdmin();
+
+      // プロフィールサブコレクション
+      match /profile/{document=**} {
+        allow read: if isAuthenticated();
+        allow write: if isAuthenticated() && isOwner(userId);
+      }
+    }
+
+    // コンテンツコレクション
+    match /contents/{contentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin();
+      allow update: if isAdmin() && isValidTimestamp();
+      allow delete: if isAdmin();
+
+      // レビューサブコレクション
+      match /reviews/{reviewId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated();
+        allow update, delete: if isAuthenticated() &&
+          (isOwner(request.resource.data.userId) || isAdmin());
+      }
+    }
+
+    // 診断結果コレクション
+    match /diagnosis_results/{resultId} {
+      allow read: if isAuthenticated() &&
+        (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated() &&
+        isOwner(request.resource.data.userId);
+      allow update: if isAuthenticated() &&
+        isOwner(resource.data.userId) && isValidTimestamp();
+      allow delete: if isAdmin();
+    }
+
+    // 相性診断結果コレクション
+    match /compatibility_results/{resultId} {
+      allow read: if isAuthenticated() &&
+        (isOwner(resource.data.userId) || isOwner(resource.data.targetUserId));
+      allow create: if isAuthenticated() &&
+        isOwner(request.resource.data.userId);
+      allow update: if false;  // 更新不可
+      allow delete: if isAdmin();
+    }
+
+    // メッセージコレクション
+    match /messages/{messageId} {
+      allow read: if isAuthenticated() &&
+        (isOwner(resource.data.senderId) || isOwner(resource.data.receiverId));
+      allow create: if isAuthenticated() &&
+        isOwner(request.resource.data.senderId);
+      allow update: if isAuthenticated() &&
+        (isOwner(resource.data.receiverId) || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // 通知コレクション
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() &&
+        isOwner(resource.data.userId);
+      allow create: if isAuthenticated() &&
+        (isOwner(request.resource.data.userId) || isAdmin());
+      allow update: if isAuthenticated() &&
+        isOwner(resource.data.userId);
+      allow delete: if isAuthenticated() &&
+        (isOwner(resource.data.userId) || isAdmin());
+    }
+
+    // システム設定コレクション
+    match /system_settings/{document=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    // 管理者コレクション
+    match /admins/{adminId} {
+      allow read: if isAuthenticated() && isAdmin();
+      allow write: if false;  // コンソールからのみ変更可能
+    }
+  }
+}
