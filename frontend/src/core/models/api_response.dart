@@ -1,19 +1,28 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+class ApiResponse<T> {
+  final T? data;
+  final String? message;
+  final bool isSuccess;
 
-part 'api_response.freezed.dart';
-part 'api_response.g.dart';
+  const ApiResponse({
+    this.data,
+    this.message,
+    required this.isSuccess,
+  });
 
-@freezed
-class ApiResponse<T> with _$ApiResponse<T> {
-  const factory ApiResponse.success({
-    required T data,
-    String? message,
-  }) = _Success<T>;
+  factory ApiResponse.success(T data, [String? message]) {
+    return ApiResponse(
+      data: data,
+      message: message,
+      isSuccess: true,
+    );
+  }
 
-  const factory ApiResponse.error({
-    required String message,
-    @Default(null) dynamic error,
-  }) = _Error<T>;
+  factory ApiResponse.error(String message) {
+    return ApiResponse(
+      message: message,
+      isSuccess: false,
+    );
+  }
 
   factory ApiResponse.fromJson(
     Map<String, dynamic> json,
@@ -21,14 +30,13 @@ class ApiResponse<T> with _$ApiResponse<T> {
   ) {
     if (json['error'] != null) {
       return ApiResponse.error(
-        message: json['message'] ?? '不明なエラーが発生しました',
-        error: json['error'],
+        json['message'] ?? '不明なエラーが発生しました',
       );
     }
 
     return ApiResponse.success(
-      data: fromJson(json['data'] as Map<String, dynamic>),
-      message: json['message'] as String?,
+      fromJson(json['data'] as Map<String, dynamic>),
+      json['message'] as String?,
     );
   }
 }
