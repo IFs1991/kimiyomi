@@ -17,10 +17,10 @@ class NotificationService {
 
   // 通知音のプリセット
   static const Map<String, String> notificationSounds = {
-    'default': 'notification_default.mp3',
-    'chime': 'notification_chime.mp3',
-    'bell': 'notification_bell.mp3',
-    'melody': 'notification_melody.mp3',
+    'default': 'assets/sounds/notification_default.mp3',
+    'chime': 'assets/sounds/notification_chime.mp3',
+    'bell': 'assets/sounds/notification_bell.mp3',
+    'melody': 'assets/sounds/notification_melody.mp3',
   };
 
   // バイブレーションパターンのプリセット
@@ -33,9 +33,11 @@ class NotificationService {
 
   // 初期化
   static Future<void> initialize() async {
-    const initializationSettings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: DarwinInitializationSettings(),
+    final initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    final initializationSettingsDarwin = DarwinInitializationSettings();
+    final initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin,
     );
 
     await _notifications.initialize(initializationSettings);
@@ -146,20 +148,19 @@ class NotificationService {
   // 古い通知の削除
   static Future<void> _cleanOldNotifications() async {
     final cutoffDate = DateTime.now().subtract(Duration(days: _retentionDays));
-    // ここで古い通知を削除する処理を実装
+    // TODO: 古い通知を削除する処理を実装
   }
 
   // 通知履歴の取得
   static Future<List<NotificationEvent>> getNotificationHistory() async {
-    // 通知履歴を取得する処理を実装
+    // TODO: 通知履歴を取得する処理を実装
     return [];
   }
 
   // 通知のグループ化
   static Future<void> groupNotifications(List<NotificationEvent> notifications) async {
     if (!_groupEnabled) return;
-
-    // 通知のグループ化処理を実装
+    // TODO: 通知のグループ化処理を実装
   }
 
   // 設定値の保持用の静的変数
